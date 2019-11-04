@@ -1,0 +1,33 @@
+version: '3.7'
+
+services:
+  postgres:
+    image: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/
+
+  rabbit:
+      image: rabbitmq
+
+  web:
+    build: .
+    volumes:
+      - .:/go/src/app
+    ports:
+      - "8080:8080"
+    links:
+      - rabbit
+      - postgres
+    command: sleep 3600000000000
+
+  worker:
+    build: .
+    volumes:
+      - .:/go/src/app
+    links:
+      - rabbit
+      - postgres
+    command: sleep 3600000000000
+    
+volumes:
+  pgdata:
